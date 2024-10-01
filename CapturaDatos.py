@@ -1,53 +1,67 @@
 import requests
 import json
-import pymongo
-from pymongo import MongoClient
+from pymongo import MongoClient  # Asegúrate de que 'pymongo' está instalado
 
-class CapturarDatos:
+class CapturaDatos:
     def __init__(self):
         self.dataJson = []
 
     def captura(self):
-        resultado_busqueda = requests.get("https://www.datos.gov.co/resource/mSpi-7cau.json")
+        resultado_busqueda = requests.get("https://www.datos.gov.co/resource/m5pi-7cau.json")
         self.dataJson = resultado_busqueda.json()
-        print(f"Tipo de datos: {type(self.dataJson)}")  # Imprimir el tipo de datos
-        print(f"Contenido de dataJson: {self.dataJson}")  # Imprimir todo el contenido
+        self.limpieza()  # Llama a limpieza después de capturar los datos
 
     def limpieza(self):
         cleaned_data = []
-        provider_mapping = {
-            "ALMACENES EXITO INVERSIONES S.A.S": "MOVIL EXITO",
-            "AVANTEL S.A.S": "WOM",
-            "VIRGIN MOBILE COLOMBIA S.A.S.": "VIRGIN MOBILE",
-            "SUMA MOVIL S.A": "SUMA MOVIL",
-            "COLOMBIA MOVIL S.A ESP": "CLARO",
-            "COMUNICACION CELULAR S A COMCEL S A": "CLARO",
-            "LOGISTICA FLASH COLOMBIA S.A.S": "FLASH",
-            "EMPRESA DE TELECOMUNICACIONES DE BOGOTA S.A ESP": "ETB",
-            "SECTROC MOBILE GROUP SAS": "SECTROC",
-            "COMUNICACIONES EXITO S.A.S": "MOVIL EXITO",
-            "PARTNERS TELECOM COLOMBIA S.A.S": "PARTNERS",
-            "LIWA S.A.S ESP": "UFF MOVIL S.A.S",
-            "LOV TELECUMICACIONES SAS": "UFF",
-            "COLOMBIA TELECUMINICAIONES S.A.S": "MOVISTAR"
-        }
+        for ind in range(len(self.dataJson)):
+            jsonClean = {
+                "year": "",
+                "quarter": "",
+                "provider": "",
+                "income": ""
+            }
+            # Limpieza de proveedores
+            proveedor = self.dataJson[ind]['proveedor']
+            if proveedor == "ALMACENES EXITO INVERSIONES S.A.S":
+                jsonClean['provider'] = "MOVIL EXITO"
+            elif proveedor == "AVANTEL S.A.S":
+                jsonClean['provider'] = "WOM"
+            elif proveedor == "VIRGIN MOBILE COLOMBIA S.A.S.":
+                jsonClean['provider'] = "VIRGIN MOBILE"
+            elif proveedor == "SUMA MOVIL S.A":
+                jsonClean['provider'] = "SUMA MOVIL"
+            elif proveedor == "COLOMBIA MOVIL S.A ESP":
+                jsonClean['provider'] = "CLARO"
+            elif proveedor == "COMUNICACION CELULAR S A COMCEL S A":
+                jsonClean['provider'] = "CLARO"
+            elif proveedor == "LOGISTICA FLASH COLOMBIA S.A.S":
+                jsonClean['provider'] = "FLASH"
+            elif proveedor == "EMPRESA DE TELECOMUNICACIONES DE BOGOTA S.A ESP":
+                jsonClean['provider'] = "ETB"
+            elif proveedor == "SECTROC MOBILE GROUP SAS":
+                jsonClean['provider'] = "SECTROC"
+            elif proveedor == "COMUNICACIONES EXITO S.A.S":
+                jsonClean['provider'] = "MOVIL EXITO"
+            elif proveedor == "PARTNERS TELECOM COLOMBIA S.A.S":
+                jsonClean['provider'] = "PARTNERS"
+            elif proveedor == "LIWA S.A.S ESP":
+                jsonClean['provider'] = "UFF MOVIL S.A.S"
+            elif proveedor == "LOV TELECOMUNICACIONES SAS":
+                jsonClean['provider'] = "UFF"
+            elif proveedor == "COLOMBIA TELECOMUNICACIONES S.A.S":
+                jsonClean['provider'] = "MOVISTAR"
 
-        if isinstance(self.dataJson, list):  # Asegurarse de que self.dataJson sea una lista
-            for entry in self.dataJson:
-                jsonClean = {
-                    "year": entry.get('anno', ''),
-                    "Quarter": entry.get('trimestre', ''),
-                    "provider": provider_mapping.get(entry.get('proveedor'), entry['proveedor']),
-                    "Income": entry.get('ingreso_por_mensajes', '')
-                }
-                cleaned_data.append(jsonClean)
-                print(jsonClean)
-        else:
-            print("Los datos no están en el formato esperado (deben ser una lista).")
+            jsonClean['year'] = self.dataJson[ind].get('anno', '')
+            jsonClean['quarter'] = self.dataJson[ind].get('trimestre', '')
+            jsonClean['income'] = self.dataJson[ind].get('ingreso_por_mensajes', '')
+            cleaned_data.append(jsonClean)
 
-        return cleaned_data
+        for item in cleaned_data:
+            print(item)
 
-if __name__ == "__main__":
-    prueba = CapturarDatos()
-    prueba.captura()
-    prueba.limpieza()
+# Ejecutar la clase
+prueba = CapturaDatos()
+prueba.captura()
+prueba.limpieza()
+
+
