@@ -7,21 +7,21 @@ class CapturaDatos:
         self.dataJson = []
         self.finalJson = []
 
-    @staticmethod
+
     def captura(self):
         resultado_busqueda = requests.get("https://www.datos.gov.co/resource/m5pi-7cau.json")
         self.dataJson = resultado_busqueda.json()
         self.limpieza()  # Llama a limpieza después de capturar los datos
-    @staticmethod
+
     def limpieza(self):
         cleaned_data = []
         for ind in range(len(self.dataJson)):
             jsonClean = {
-                "year": "",
-                "quarter": "",
-                "provider": "",
-                "income": "",
-                "amountSMS": ""
+                "Year": "",
+                "Quarter": "",
+                "Provider": "",
+                "Income": "",
+                "AmountSMS": ""
             }
             # Limpieza de proveedores
             proveedor = self.dataJson[ind]['proveedor']
@@ -54,12 +54,13 @@ class CapturaDatos:
             elif proveedor == "COLOMBIA TELECOMUNICACIONES S.A.S":
                 jsonClean['provider'] = "MOVISTAR"
 
-            jsonClean['year'] = self.dataJson[ind].get['anno']
-            jsonClean['quarter'] = self.dataJson[ind].get['trimestre']
-            jsonClean['income'] = self.dataJson[ind].get['ingreso_por_mensajes']
-            jsonClean['amountSMS'] = self.dataJson[ind].get['cantidad_de_mensajes']
+            jsonClean['Year'] = self.dataJson[ind].get('anno')
+            jsonClean['Quarter'] = self.dataJson[ind].get('trimestre')
+            jsonClean['Provider'] = self.dataJson[ind].get('Proveedor')
+            jsonClean['Income'] = self.dataJson[ind].get('ingreso_por_mensajes')
+            jsonClean['AmountSMS'] = self.dataJson[ind].get('cantidad_de_mensajes')
             self.finalJson.append(jsonClean)
-            return self.finalJson
+        return self.finalJson
 
 
 
