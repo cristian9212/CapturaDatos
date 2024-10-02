@@ -1,16 +1,18 @@
 import requests
 import json
-from pymongo import MongoClient  # Asegúrate de que 'pymongo' está instalado
+from pymongo import MongoClient  # Libreria de 'pymongo' está instalado
 
 class CapturaDatos:
     def __init__(self):
         self.dataJson = []
+        self.finalJson = []
 
+    @staticmethod
     def captura(self):
         resultado_busqueda = requests.get("https://www.datos.gov.co/resource/m5pi-7cau.json")
         self.dataJson = resultado_busqueda.json()
         self.limpieza()  # Llama a limpieza después de capturar los datos
-
+    @staticmethod
     def limpieza(self):
         cleaned_data = []
         for ind in range(len(self.dataJson)):
@@ -18,7 +20,8 @@ class CapturaDatos:
                 "year": "",
                 "quarter": "",
                 "provider": "",
-                "income": ""
+                "income": "",
+                "amountSMS": ""
             }
             # Limpieza de proveedores
             proveedor = self.dataJson[ind]['proveedor']
@@ -51,17 +54,14 @@ class CapturaDatos:
             elif proveedor == "COLOMBIA TELECOMUNICACIONES S.A.S":
                 jsonClean['provider'] = "MOVISTAR"
 
-            jsonClean['year'] = self.dataJson[ind].get('anno', '')
-            jsonClean['quarter'] = self.dataJson[ind].get('trimestre', '')
-            jsonClean['income'] = self.dataJson[ind].get('ingreso_por_mensajes', '')
-            cleaned_data.append(jsonClean)
+            jsonClean['year'] = self.dataJson[ind].get['anno']
+            jsonClean['quarter'] = self.dataJson[ind].get['trimestre']
+            jsonClean['income'] = self.dataJson[ind].get['ingreso_por_mensajes']
+            jsonClean['amountSMS'] = self.dataJson[ind].get['cantidad_de_mensajes']
+            self.finalJson.append(jsonClean)
+            return self.finalJson
 
-        for item in cleaned_data:
-            print(item)
 
-# Ejecutar la clase
-prueba = CapturaDatos()
-prueba.captura()
-prueba.limpieza()
+
 
 
