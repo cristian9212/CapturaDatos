@@ -63,4 +63,5 @@ class PrepareData:
 
 prueba = PrepareData()
 prueba.prepareJson()
+prueba.storeDataPrepared()
 prueba.pandasDataPrepared()
